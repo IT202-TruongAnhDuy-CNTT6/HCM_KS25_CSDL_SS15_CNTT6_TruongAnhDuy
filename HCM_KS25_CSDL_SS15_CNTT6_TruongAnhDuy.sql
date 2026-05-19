@@ -114,12 +114,18 @@ DROP PROCEDURE IF EXISTS sp_pay_tuition;
 DELIMITER //
 CREATE PROCEDURE sp_pay_tuition()
 BEGIN
+	DECLARE v_total_debt DECIMAL(10,2);
 	START TRANSACTION;
-		UPDATE students 
+		UPDATE students
         SET total_debt = total_debt - 2000000
         WHERE student_id = 'SV01';
         
-        IF total_debt < 0 THEN ROLLBACK;
+        SELECT total_debt
+        INTO v_total_debt
+        FROM students
+        WHERE student_id = 'SV01';
+        
+        IF v_total_debt < 0 THEN ROLLBACK;
         ELSE COMMIT;
         END IF;
 END //
